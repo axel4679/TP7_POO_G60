@@ -26,7 +26,7 @@ public class FacturaDaoImp implements IFacturaDao {
 			System.out.println("No se pudo guardar la factura");	
 		}
 	}
-
+ 
 	@Override
 	public Factura buscarFacturaPorId(long idFactura) {
 		return manager.find(Factura.class, idFactura);

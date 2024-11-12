@@ -9,3 +9,4 @@ public interface IFacturaDao {
 	public void mostrarTodasLasFacturas();
 	public void mostrarFacturasFiltradas();
 }
+  

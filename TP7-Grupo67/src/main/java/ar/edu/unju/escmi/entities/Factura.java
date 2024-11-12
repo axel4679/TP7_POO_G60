@@ -29,7 +29,7 @@ public class Factura {
 	@ManyToOne
 	@JoinColumn(name = "cliente_id")
 	private Cliente cliente; 
-	
+	 
 	@Column(name = "fact_total")
 	private double total;
 	

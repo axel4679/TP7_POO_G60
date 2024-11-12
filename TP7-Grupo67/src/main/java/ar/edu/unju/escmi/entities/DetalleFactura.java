@@ -63,7 +63,7 @@ public class DetalleFactura {
     public int getCantidad() {
 		return cantidad;
 	}
-
+ 
 	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
 	}
@@ -88,4 +88,4 @@ public class DetalleFactura {
 	public void setFactura(Factura factura) {
 		this.factura = factura;
 	}
-}
+} 

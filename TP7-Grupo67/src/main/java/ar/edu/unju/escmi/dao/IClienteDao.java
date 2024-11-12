@@ -8,3 +8,4 @@ public interface IClienteDao {
 	public Cliente buscarClientePorId(long idCliente);
 	public void mostrarTodosLosClientes();
 }
+ 

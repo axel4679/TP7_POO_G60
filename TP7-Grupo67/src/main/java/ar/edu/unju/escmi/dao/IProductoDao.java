@@ -9,3 +9,4 @@ public interface IProductoDao {
 	public void eliminarProductoLogicamente(Producto producto);
 	public void mostrarTodosLosProductos();
 }
+ 

@@ -57,7 +57,7 @@ public class ProductoDaoImp implements IProductoDao {
 			}
 			System.out.println("No se pudo eliminar el producto");
 		}
-	}
+	} 
 
 	@Override
 	public void mostrarTodosLosProductos() {
