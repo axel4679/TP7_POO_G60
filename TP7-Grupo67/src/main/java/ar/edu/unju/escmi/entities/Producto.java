@@ -24,10 +24,15 @@ public class Producto {
 	private double precioUnitario;
 	
 	@Column(name = "prod_estado")
-	private boolean estado;
+	private boolean estado=true;
 	
-	public Producto(String descripcion, double precioUnitario) {
+	public Producto() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public Producto(long id, String descripcion, double precioUnitario) {
 		super();
+		this.id = id;
 		this.descripcion = descripcion;
 		this.precioUnitario = precioUnitario;
 		this.estado = true;

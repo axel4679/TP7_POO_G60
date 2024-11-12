@@ -7,4 +7,5 @@ public interface IProductoDao {
 	public void modificarPrecioProducto(Producto producto);
 	public Producto buscarProductoPorId(long idProducto);
 	public void eliminarProductoLogicamente(Producto producto);
+	public void mostrarTodosLosProductos();
 }

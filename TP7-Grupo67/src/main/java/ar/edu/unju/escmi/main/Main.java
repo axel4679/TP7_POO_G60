@@ -1,6 +1,5 @@
 package ar.edu.unju.escmi.main;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -9,6 +8,15 @@ import ar.edu.unju.escmi.dao.imp.*;
 
 public class Main {
 
+	private static ProductoDaoImp productoDaoImp = new ProductoDaoImp();
+	private static ClienteDaoImp clienteDaoImp = new ClienteDaoImp();
+	private static FacturaDaoImp facturaDaoImp = new FacturaDaoImp();
+	
+	private static long idProductoAuto = 1;
+	private static long idClienteAuto = 1;
+	private static long idFacturaAuto = 1;
+	private static long idDetalleAuto = 1;
+	
 	public static void main(String[] args) {
 		
 		Scanner sc = new Scanner(System.in);
@@ -35,62 +43,62 @@ public class Main {
 			
 			switch(op) {
 			case "1":
-				AltaCliente(sc);
+				altaCliente(sc);
 			break;
 			
 			case "2":
-				AltaProducto(sc);
+				altaProducto(sc);
 			break;
 			
 			case "3":
-				VenderProducto(sc);
+				venderProducto(sc);
 			break;
 			
 			case "4":
-				System.out.println("/nIngrese el numero de ID de la factura: ");
+				System.out.print("\nIngrese el numero de ID de la factura: ");
 				long id = sc.nextLong();
-				BuscarFactura(id);
+				buscarFactura(id);
 			break;
 			
 			case "5":
-				System.out.println("/nIngrese el numero de ID de la factura para poder eliminarla: ");
+				System.out.print("\nIngrese el numero de ID de la factura para poder eliminarla: ");
 				long idE = sc.nextLong();
-				EliminarFactura(idE);
+				eliminarFactura(idE);
 			break;
 			
 			case "6":
-				System.out.println("/nIngrese el numero de ID del producto para poder eliminarlo: ");
+				System.out.print("\nIngrese el numero de ID del producto para poder eliminarlo: ");
 				long idP = sc.nextLong();
-				EliminarProducto(idP);
+				eliminarProducto(idP);
 			break;
 			
 			case "7":
-				ModificarCliente(sc);
+				modificarCliente(sc);
 			break;
 			
 			case "8":
-				ModificarProducto(sc);
+				modificarProducto(sc);
 			break;
 			
 			case "9":
-				MostrarClientes();
+				mostrarFacturas();
 			break;
 			
 			case "10":
-				MostrarFacturas();
+				mostrarClientes();
 			break;
 			
 			case "11":
-				MostrarFacturasFiltradas();
+				mostrarFacturasFiltradas();
 			break;
 			
 			case "12":
-				System.out.println("*****FIN DEL PROGRAMA*****");
+				System.out.println("\n*****FIN DEL PROGRAMA*****\n");
 				band=false;
 			break;
 			
 			default:
-				System.out.println("Opcion no disponible");
+				System.out.println("\nOpcion no disponible\n");
 			}
 			
 		}while(band);
@@ -100,142 +108,207 @@ public class Main {
 	}
 	
 	
-public static void AltaCliente(Scanner sc) {
+	public static void altaCliente(Scanner sc) {
+			
+		System.out.print("\nIngrese nombre: ");
+		String nombre = sc.nextLine();
+		System.out.print("Ingrese apellido: ");
+		String apellido = sc.nextLine();
+		System.out.print("Ingrese domicilio: ");
+		String domicilio = sc.nextLine();
 		
-	ClienteDaoImp clienteDaoImp = new ClienteDaoImp(); 
+		boolean datoInvalido=false;
+		int dni=0;
+		do {
+			try {
+				datoInvalido=false;
+				System.out.print("Ingrese DNI: ");
+				dni = sc.nextInt();
+			}
+			catch(Exception e) {
+				System.out.println("\nDato no valido, vuelva a ingresar el DNI");
+				datoInvalido=true;
+				sc.nextLine();
+			}
+		}while(datoInvalido);
+	
+		List<Factura> facturas = null;
+		Cliente cliente = new Cliente(idClienteAuto, nombre, apellido, domicilio, dni, facturas);  
+		idClienteAuto++;
 		
-	System.out.print("Ingrese ID del Cliente: ");
-	long id = sc.nextLong();
-	System.out.print("Ingrese nombre: ");
-	String nombre = sc.nextLine();
-	System.out.print("Ingrese apellido: ");
-	String apellido = sc.nextLine();
-	System.out.print("Ingrese domicilio: ");
-	String domicilio = sc.nextLine();
-	System.out.print("Ingrese DNI: ");
-	int dni = sc.nextInt();
-
-	Cliente cliente = new Cliente(id, nombre, apellido, domicilio, dni, true);  
-	clienteDaoImp.guardarCliente(cliente);
-	System.out.println("Cliente registrado exitosamente.");
-}
+		clienteDaoImp.guardarCliente(cliente);
+		System.out.println("\nCliente registrado exitosamente.\n");
+		sc.nextLine();
+	}
 
 	
-public static void AltaProducto(Scanner sc) {
+	public static void altaProducto(Scanner sc) {
+			
+		System.out.print("\nIngrese descripción del producto: ");
+		String descripcion = sc.nextLine();
 		
-	ProductoDaoImp productoDaoImp = new ProductoDaoImp();
+		boolean datoInvalido=false;
+		int precioUnitario=0;
+		do {
+			try {
+				datoInvalido=false;
+				System.out.print("Ingrese precio unitario: ");
+				precioUnitario = sc.nextInt();
+			}
+			catch(Exception e) {
+				System.out.println("\nDato no valido, vuelva a ingresar el precio");
+				datoInvalido=true;
+				sc.nextLine();
+			}
+		}while(datoInvalido);
+	
+		Producto producto = new Producto(idProductoAuto, descripcion, precioUnitario);  
+		idProductoAuto++;
 		
-	System.out.print("Ingrese el ID del producto: ");
-	long id = sc.nextLong();
-	System.out.print("Ingrese descripción del producto: ");
-	String descripcion = sc.nextLine();
-	System.out.print("Ingrese precio unitario: ");
-	double precioUnitario = sc.nextDouble();
+		productoDaoImp.guardarProducto(producto);
+		System.out.println("\nProducto registrado exitosamente.\n");
+		sc.nextLine();
+		
+	}
+	
+	
+	public static void venderProducto(Scanner sc) {
+		        
+		clienteDaoImp.mostrarTodosLosClientes();
+		
+		Cliente cliente = null;
+	    long idCliente=0;
+	    boolean datoInvalido=true;
+	    do {
+	    	try {
+	    		System.out.print("Ingrese el ID del Cliente: ");
+		        idCliente = sc.nextLong();
+		        
+		        cliente = clienteDaoImp.buscarClientePorId(idCliente);
 
-	Producto producto = new Producto(descripcion, precioUnitario);  
-	productoDaoImp.guardarProducto(producto);
-	System.out.println("Producto registrado exitosamente.");
-		
-}
-	
-	
-	public static void VenderProducto(Scanner sc) {
-		
-		FacturaDaoImp facturaDaoImp = new FacturaDaoImp();
-		Factura factura = new Factura();
-		factura.setFecha(LocalDate.now());
-        System.out.print("Ingrese el ID del cliente: ");
-        Long clienteId = sc.nextLong();
+		        if (cliente == null) {
+		            System.out.println("Cliente no encontrado. Intente nuevamente");
+		        }
+		        else datoInvalido=false;
+	    	}
+	    	catch(Exception e) {
+	    		System.out.println("\nDato no valido, ingrese nuevamente el ID");
+	    		sc.nextLine();
+	    	}
+	    } while (datoInvalido);
         
-        ClienteDaoImp clienteDaoImp = new ClienteDaoImp();
-        Cliente cliente = clienteDaoImp.buscarClientePorId(clienteId);
-        ProductoDaoImp ProductoDaoImp = new ProductoDaoImp();
-
-        if (cliente == null) {
-            System.out.println("Cliente no encontrado.");
-            sc.close();
-            return;
-        }
-
-        factura.setCliente(cliente);
-
+        productoDaoImp.mostrarTodosLosProductos();
+        
+        Factura factura = new Factura();
+        factura.setId(idFacturaAuto);
+        idFacturaAuto++;
+        
         List<DetalleFactura> detalles = new ArrayList<>();
         String agregar = null;
         do {
-            DetalleFactura detalle = new DetalleFactura();
+            Producto producto = null;
+    	    long idProducto;
+    	    datoInvalido=true;
+    	    do {
+    	    	try {
+    	    		System.out.print("\nIngrese el ID del Producto: ");
+    		        idProducto = sc.nextLong();
+    		        producto = productoDaoImp.buscarProductoPorId(idProducto);
 
-            System.out.print("Ingrese el ID del producto: ");
-            Long productoId = sc.nextLong();
-            Producto producto = ProductoDaoImp.buscarProductoPorId(productoId);
+    		        if (producto == null) {
+    		            System.out.println("\nProducto no encontrado. Intente nuevamente");
+    		        }
+    		        else datoInvalido=false;
+    	    	}
+    	    	catch(Exception e) {
+    	    		System.out.println("\nDato no valido, ingrese nuevamente el ID");
+    	    		sc.nextLine();
+    	    	}
+    	        
+    	    } while (datoInvalido);
 
-            if (producto == null) {
-                System.out.println("Producto no encontrado.");
-                continue;
-            }
-
-            detalle.setProducto(producto);
-
-            System.out.print("Ingrese la cantidad: ");
-            int cantidad = sc.nextInt();
-            detalle.setCantidad(cantidad);
-
+            int cantidad=0;
+    		do {
+    			try {
+    				datoInvalido=false;
+    				System.out.print("\nIngrese la cantidad: ");
+    				cantidad = sc.nextInt();
+    			}
+    			catch(Exception e) {
+    				System.out.println("\nDato no valido, vuelva a ingresar la cantidad");
+    				datoInvalido=true;
+    				sc.nextLine();
+    			}
+    		}while(datoInvalido);
+            
+    		DetalleFactura detalle = new DetalleFactura(idDetalleAuto, producto, cantidad, factura);
+    		idDetalleAuto++;
+    		
             detalle.calcularSubtotal();
-            detalle.setFactura(factura);
             detalles.add(detalle);
 
-            System.out.print("¿Desea agregar otro producto? (s/n): ");
+            System.out.print("\n¿Desea agregar otro producto? (s/n): ");
             agregar = sc.next();
         } while (agregar.equalsIgnoreCase("s"));
 
         factura.setDetalles(detalles);
+        factura.setCliente(cliente);
+        factura.setCliente(cliente);
         factura.calcularTotal(); 
-
       
         facturaDaoImp.guardarFactura(factura);
 
-        System.out.println("Venta registrada exitosamente con ID de factura: " + factura.getId());
+        System.out.println("\nVenta registrada exitosamente con ID de factura: " + factura.getId());
 
-        sc.close();
+        sc.nextLine();
 	}
 	
 	
-	public static void BuscarFactura(long numId) {
+	public static void buscarFactura(long numId) {
 		FacturaDaoImp factura = new FacturaDaoImp();
 		Factura fact = factura.buscarFacturaPorId(numId);
 		fact.mostrarFactura();
 	}
 	
 	
-	public static void EliminarFactura(long numId) {
-		FacturaDaoImp factura = new FacturaDaoImp();
-		Factura fact = factura.buscarFacturaPorId(numId);
-		factura.eliminarFacturaLogicamente(fact);
+	public static void eliminarFactura(long numId) {
+		Factura fact = facturaDaoImp.buscarFacturaPorId(numId);
 		fact.setEstado(false);
+		facturaDaoImp.eliminarFacturaLogicamente(fact);
 	}
 	
 	
-	public static void EliminarProducto(long idProd) {
-		ProductoDaoImp producto = new ProductoDaoImp();
-		Producto prod = producto.buscarProductoPorId(idProd);
-		producto.eliminarProductoLogicamente(prod);
+	public static void eliminarProducto(long idProd) {
+		Producto prod = productoDaoImp.buscarProductoPorId(idProd);
 		prod.setEstado(false);
+		productoDaoImp.eliminarProductoLogicamente(prod);
 	}
 	
 	
-	public static void ModificarCliente(Scanner sc) {
-		ClienteDaoImp clienteDaoImp = new ClienteDaoImp();
-	    Cliente cliente = null;
-	    long idCliente;
-
+	public static void modificarCliente(Scanner sc) {
+	    
+		clienteDaoImp.mostrarTodosLosClientes();
+		
+		Cliente cliente = null;
+	    long idCliente=0;
+	    boolean datoInvalido=true;
 	    do {
-	        System.out.print("Ingrese el ID del cliente a modificar: ");
-	        idCliente = sc.nextLong();
-	        cliente = clienteDaoImp.buscarClientePorId(idCliente);
+	    	try {
+	    		System.out.print("\nIngrese el ID del cliente a modificar: ");
+		        idCliente = sc.nextLong();
+		        
+		        cliente = clienteDaoImp.buscarClientePorId(idCliente);
 
-	        if (cliente == null) {
-	            System.out.println("Cliente no encontrado. Intente nuevamente");
-	        }
-	    } while (cliente == null);
+		        if (cliente == null) {
+		            System.out.println("Cliente no encontrado. Intente nuevamente");
+		        }
+		        else datoInvalido=false;
+	    	}
+	    	catch(Exception e) {
+	    		System.out.println("\nDato no valido, ingrese nuevamente el ID");
+	    		sc.nextLine();
+	    	}
+	    } while (datoInvalido);
 
 	    sc.nextLine();
 
@@ -248,42 +321,73 @@ public static void AltaProducto(Scanner sc) {
 	    System.out.print("Ingrese el nuevo domicilio: ");
 	    cliente.setDomicilio(sc.nextLine());
 
-	    System.out.print("Ingrese el nuevo DNI: ");
-	    cliente.setDni(sc.nextInt());
-
+		do {
+			try {
+				datoInvalido=false;
+				System.out.print("Ingrese el nuevo DNI: ");
+				cliente.setDni(sc.nextInt());
+			}
+			catch(Exception e) {
+				System.out.println("\nDato no valido, vuelva a ingresar el DNI");
+				datoInvalido=true;
+				sc.nextLine();
+			}
+		}while(datoInvalido);
+		
 	    clienteDaoImp.modificarCliente(cliente);
-	    System.out.println("Datos del cliente actualizados");
+	    System.out.println("\nDatos del cliente actualizados.\n");
 	}
 	
 	
-	public static void ModificarProducto(Scanner sc) {
-		ProductoDaoImp productoDaoImp = new ProductoDaoImp();
-	    Producto producto = null;
+	public static void modificarProducto(Scanner sc) {
+
+		productoDaoImp.mostrarTodosLosProductos();
+		
+		Producto producto = null;
 	    long idProducto;
-
+	    boolean datoInvalido=true;
 	    do {
-	        System.out.print("Ingrese el ID del producto a modificar: ");
-	        idProducto = sc.nextLong();
-	        producto = productoDaoImp.buscarProductoPorId(idProducto);
+	    	try {
+	    		System.out.print("\nIngrese el ID del producto a modificar: ");
+		        idProducto = sc.nextLong();
+		        producto = productoDaoImp.buscarProductoPorId(idProducto);
 
-	        if (producto == null) {
-	            System.out.println("Producto no encontrado. Intente nuevamente");
-	        }
-	    } while (producto == null);
+		        if (producto == null) {
+		            System.out.println("\nProducto no encontrado. Intente nuevamente");
+		        }
+		        else datoInvalido=false;
+	    	}
+	    	catch(Exception e) {
+	    		System.out.println("\nDato no valido, ingrese nuevamente el ID");
+	    		sc.nextLine();
+	    	}
+	        
+	    } while (datoInvalido);
 
-	    System.out.print("Ingrese el nuevo precio del producto: ");
-	    double nuevoPrecio = sc.nextDouble();
-	    producto.setPrecioUnitario(nuevoPrecio);
+	    System.out.print("Ingrese nueva descripcion del producto: ");
+	    producto.setDescripcion(sc.nextLine());
+	    
+		do {
+			try {
+				datoInvalido=false;
+				System.out.print("Ingrese nuevo precio unitario del producto: ");
+				producto.setPrecioUnitario(sc.nextDouble());
+			}
+			catch(Exception e) {
+				System.out.println("\nDato no valido, vuelva a ingresar el precio");
+				datoInvalido=true;
+				sc.nextLine();
+			}
+		}while(datoInvalido);
 
 	    productoDaoImp.modificarPrecioProducto(producto);
-	    System.out.println("Precio del producto modificado");
+	    System.out.println("\nPrecio del producto modificado.\n");
 	}
 	
 	
-	public static void MostrarFacturas() {
+	public static void mostrarFacturas() {
 		
 		 try {
-			 FacturaDaoImp facturaDaoImp= new FacturaDaoImp(); 
 		        System.out.println("Lista de Facturas:");
 				facturaDaoImp.mostrarTodasLasFacturas();
 	        } catch (Exception e) {
@@ -293,9 +397,8 @@ public static void AltaProducto(Scanner sc) {
 	    }
 	
 	
-	public static void MostrarClientes() {
+	public static void mostrarClientes() {
 		 try {
-			 	ClienteDaoImp clienteDaoImp = new ClienteDaoImp();
 		        System.out.println("Lista de Clientes:");
 				clienteDaoImp.mostrarTodosLosClientes();
 	        } catch (Exception e) {
@@ -305,9 +408,8 @@ public static void AltaProducto(Scanner sc) {
 	    }
 		
 	
-	public static void MostrarFacturasFiltradas() {
+	public static void mostrarFacturasFiltradas() {
 		 try {
-			 	FacturaDaoImp facturaDaoImp= new FacturaDaoImp(); 
 		        System.out.println("Lista de Facturas filtradas:");
 				facturaDaoImp.mostrarFacturasFiltradas();
 	        } catch (Exception e) {

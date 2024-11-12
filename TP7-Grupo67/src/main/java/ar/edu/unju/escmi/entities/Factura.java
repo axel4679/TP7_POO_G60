@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -24,27 +26,31 @@ public class Factura {
 	@Column(name = "fact_fecha")
 	private LocalDate fecha = LocalDate.now();
 	
-	@Column(name = "fact_cliente")
+	@ManyToOne
+	@JoinColumn(name = "cliente_id")
 	private Cliente cliente; 
 	
 	@Column(name = "fact_total")
 	private double total;
 	
 	@Column(name = "fact_estado")
-	private boolean estado;
+	private boolean estado=true;
 	
 	@OneToMany(mappedBy = "factura", cascade = CascadeType.ALL)
     private List<DetalleFactura> detalles;
 	
-	public Factura(LocalDate fecha, Cliente cliente, double total) {
+	public Factura(long id, Cliente cliente, List<DetalleFactura> detalles) {
 		super();
-		this.fecha = fecha;
+		this.id = id;
 		this.cliente = cliente;
-		this.total = total;
+		this.detalles = detalles;
 		this.estado = true;
 	}
-	
-	
+		
+	public void setId(long id) {
+		this.id = id;
+	}
+
 	public List<DetalleFactura> getDetalles() {
 		return detalles;
 	}
@@ -94,9 +100,14 @@ public class Factura {
 	public void mostrarFactura() {
 		System.out.println("\nID: "+id);
 		System.out.println("Fecha: "+fecha);
-		System.out.println("Cliente: "+cliente);
-		System.out.println("Domicilio del cliente: "+cliente);
+		System.out.println("Cliente: "+cliente.getNombre()+" "+cliente.getApellido());
+		System.out.println("Domicilio del cliente: "+cliente.getDomicilio());
 		System.out.println("Monto total: "+total);
+		
+		for(DetalleFactura detalle : detalles) {
+			System.out.println("\nProducto: "+detalle.getProducto().getDescripcion());
+			System.out.println("Precio: "+detalle.getProducto().getPrecioUnitario());
+		}
 	}
 
 

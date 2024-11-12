@@ -1,6 +1,9 @@
 package ar.edu.unju.escmi.dao.imp;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import ar.edu.unju.escmi.config.EmfSingleton;
 import ar.edu.unju.escmi.dao.IProductoDao;
@@ -13,15 +16,13 @@ public class ProductoDaoImp implements IProductoDao {
 	public void guardarProducto(Producto producto) {
 		try {
 			manager.getTransaction().begin();
-			manager.persist(producto);
+			manager.merge(producto);
 			manager.getTransaction().commit();
 		}catch(Exception e) {
 			if(manager.getTransaction() != null) {
 				manager.getTransaction().rollback();
 			}
 			System.out.println("No se pudo guardar el producto");	
-		}finally {
-			manager.close();
 		}
 	}
 	
@@ -41,8 +42,6 @@ public class ProductoDaoImp implements IProductoDao {
 				manager.getTransaction().rollback();
 			}
 			System.out.println("No se pudo modificar el producto");
-		}finally {
-			manager.close();
 		}
 	}
 
@@ -50,15 +49,24 @@ public class ProductoDaoImp implements IProductoDao {
 	public void eliminarProductoLogicamente(Producto producto) {
 		try {
 			manager.getTransaction().begin();
-			manager.remove(producto);
+			manager.merge(producto);
 			manager.getTransaction().commit();
 		}catch(Exception e) {
 			if(manager.getTransaction() != null) {
 				manager.getTransaction().rollback();
 			}
 			System.out.println("No se pudo eliminar el producto");
-		}finally {
-			manager.close();
+		}
+	}
+
+	@Override
+	public void mostrarTodosLosProductos() {
+		TypedQuery<Producto> query = manager.createQuery("SELECT e FROM Producto e",Producto.class);
+		List<Producto> productos = query.getResultList();
+		for(Producto producto : productos) {
+			if(producto.isEstado()) {
+				producto.mostrarProducto();
+			}
 		}
 	}
 }

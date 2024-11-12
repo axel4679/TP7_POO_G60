@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Column;
 
@@ -15,8 +17,9 @@ public class DetalleFactura {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "detalle_fact_id")
-    private Long id;
+    private long id;
 
+    @OneToOne
     @JoinColumn(name = "detalle_fact_producto")
     private Producto producto;
 
@@ -26,12 +29,17 @@ public class DetalleFactura {
     @Column(name = "detalle_fact_subtotal")
     private double subtotal;
 
+    @ManyToOne
+    @JoinColumn(name = "fact_id")
+    private Factura factura;
+    
     public DetalleFactura() {}
 
-    public DetalleFactura(Producto producto, int cantidad) {
-        this.producto = producto;
+    public DetalleFactura(long id, Producto producto, int cantidad, Factura factura) {
+        this.id = id;
+    	this.producto = producto;
         this.cantidad = cantidad;
-        calcularSubtotal();
+        this.factura = factura;
     }
 
     public Long getId() {
@@ -48,7 +56,6 @@ public class DetalleFactura {
 
     public void setProducto(Producto producto) {
         this.producto = producto;
-        calcularSubtotal();  
     }
     
     
@@ -79,7 +86,6 @@ public class DetalleFactura {
     }
 
 	public void setFactura(Factura factura) {
-		// TODO Auto-generated method stub
-		
+		this.factura = factura;
 	}
 }
